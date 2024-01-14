@@ -1,3 +1,6 @@
+# Author: Alexis Humblet
+# 2024
+
 from estimate import sin_param_estimate
 
 import numpy as np
