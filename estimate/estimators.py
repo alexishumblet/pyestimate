@@ -45,7 +45,7 @@ def sin_param_estimate(x, freq=None, use_fft=True, nfft=4096, brute_Ns=1000, det
         :format: doctest
         :include-source: True
 
-        >>> from estimate import sin_param_estimate
+        >>> from estimate.estimators import sin_param_estimate
         >>> import numpy as np
         >>> import matplotlib.pyplot as plt
         >>> N = 20 # number of samples
