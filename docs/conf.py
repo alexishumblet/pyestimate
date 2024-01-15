@@ -13,12 +13,12 @@
 import os
 import sys
 # sys.path.insert(0, os.path.abspath('.'))
-sys.path.insert(0, os.path.abspath('../estimate'))
+sys.path.insert(0, os.path.abspath('../pyestimate'))
 
 
 # -- Project information -----------------------------------------------------
 
-project = 'estimate'
+project = 'pyestimate'
 copyright = '2024, Alexis Humblet'
 author = 'Alexis Humblet'
 

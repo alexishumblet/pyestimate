@@ -1,14 +1,14 @@
 from setuptools import setup
 
 setup(
-    name='estimate',
+    name='pyestimate',
     version='0.1.0',    
-    description='Various algoritms in statistical signal processing',
-    url='https://github.com/alexishumblet/estimate',
+    description='Various algorithms in statistical signal processing',
+    url='https://github.com/alexishumblet/pyestimate',
     author='Alexis Humblet',
     author_email='alexishumblet@gmail.com',
     license='BSD 3-clause',
-    packages=['estimate'],
+    packages=['pyestimate'],
     install_requires=['scipy',
                       'numpy',                     
                       ],
