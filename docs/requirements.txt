@@ -4,4 +4,4 @@ pydata-sphinx-theme>=0.13.3
 sphinx>=7
 numpydoc
 scipy
-pyestimate
+sphinx-autoapi
