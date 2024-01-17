@@ -1,7 +1,7 @@
 # Author: Alexis Humblet
 # 2024
 
-from pyestimate.estimators import sin_param_estimate
+from pyestimate import sin_param_estimate
 
 import numpy as np
 

@@ -10,7 +10,7 @@ pyestimate documentation
    :maxdepth: 2
    :caption: Contents:
 
-.. automodule:: pyestimate.estimators
+.. automodule:: pyestimate
    :members:
 
 Indices and tables
