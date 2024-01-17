@@ -8,3 +8,8 @@ Installation
 Install pyestimate and its dependencies from PyPI_ using pip::
 
     pip install pyestimate
+
+Documentation
+=============
+
+Documentation is provided by [ReadtheDocs](http://pyestimate.readthedocs.org/).
