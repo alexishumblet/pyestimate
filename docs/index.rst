@@ -4,13 +4,13 @@
    contain the root `toctree` directive.
 
 pyestimate documentation
-======================
+========================
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-.. automodule:: pyestimate
+.. automodule:: pyestimate.estimators
    :members:
 
 Indices and tables
