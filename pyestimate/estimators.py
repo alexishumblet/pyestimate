@@ -175,12 +175,7 @@ def sin2d_param_estimate(x, freq=None, use_fft=False, nfft=[1024, 1024], brute_N
         >>> A_hat, f_hat, phi_hat = sin2d_param_estimate(x, brute_Ns=100) # parameters estimation
         >>> print(f'Estimated amplitude: {A_hat: .3f} (true value: {A: .3f})')
         >>> print(f'Estimated frequencies: {f_hat[0]: .3f}, {f_hat[1]: .3f} (true values: {fn0: .3f}, {fm0: .3f})')
-        >>> print(f'Estimated phase: {phi_hat: .3f} (true values: {phi: .3f})')
-    
-    .. plot::
-        :format: doctest
-        :include-source: True
-
+        >>> print(f'Estimated phase: {phi_hat: .3f} (true values: {phi: .3f})')   
         >>> plt.subplot(121)
         >>> plt.imshow(x, vmin=np.min(x), vmax=np.max(x))
         >>> plt.title('Noisy input 2D sinusoid')
