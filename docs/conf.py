@@ -31,7 +31,7 @@ release = '0.1.0'
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['numpydoc', 'matplotlib.sphinxext.plot_directive', 'sphinx.ext.autodoc'] # 'autoapi.extension', 
+extensions = ['numpydoc', 'matplotlib.sphinxext.plot_directive', 'sphinx.ext.autodoc', 'sphinx.ext.mathjax',  'sphinx.ext.autosummary'] # 'autoapi.extension', 
 #autoapi_dirs = ['../pyestimate']
 #autoapi_generate_api_docs = False
 
