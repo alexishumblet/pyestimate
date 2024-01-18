@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='pyestimate',
-    version='0.1.1',    
+    version='0.2.0',    
     description='Various algorithms in statistical signal processing',
     url='https://github.com/alexishumblet/pyestimate',
     author='Alexis Humblet',
@@ -14,7 +14,7 @@ setup(
                       ],
 
     classifiers=[
-        'Development Status :: 1 - Planning',
+        'Development Status :: 4 - Beta',
         'Intended Audience :: Science/Research',
         'License :: OSI Approved :: BSD License',  
     ],
