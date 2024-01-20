@@ -219,3 +219,126 @@ def sin2d_param_estimate(x, freq=None, use_fft=False, nfft=[1024, 1024], brute_N
     phase = np.arctan2(-alpha_hat[1], alpha_hat[0])[0]
 
     return amp, freq, phase
+
+def multiple_sin_param_estimate(x, p, freq=None, brute_Ns=100, detrend_type='constant'):
+    """
+    Estimate the parameters of multiple sinusoids (amplitudes, frequencies and phases). The signal model is :math:`s[n] = \sum_{i=1}^{p} A_i \cos(2 \pi f_i n + \phi_i)`.
+
+    In the presence of white gaussian noise, the estimator implemented is the maximum likelihood estimator.
+
+    Parameters
+    ----------
+    x : array_like 
+        A 1-D input sequence of real numbers.
+    p : int
+        Number of sinusoids to be estimated.
+    freq : sequence of p floats, optional
+        Digital frequency of the input sinusoids (`freq = F/Fs` if `F` are the analog frequencies and `Fs` is the sampling frequency). If `freq` is None or is not given, the frequencies are estimated.
+    brute_Ns: int, optional
+        Number of points to be used for the brute force search. Increase if frequency resolution is too coarse, decrease to speed-up.
+    detrend_type: {'linear', 'constant'}, optional
+        Specifies how to detrend the input sequence. It is passed as the type argument to the `scipy.signal.detrend` function. Default to `constant`.
+
+    Returns
+    -------
+    A: list of floats
+        Estimated amplitude of the sinusoids (> 0).
+    f: list of floats
+        Estimated digital frequencies of the sinusoids (or input frequencies if `freq` was given as input parameter), in `]0, 0.5[`.
+    phi: list of floats
+        Estimated phases of the sinusoids, in `[-pi, pi]`.
+
+    Notes
+    -----
+    The estimator is the maximum likelihood estimator (MLE) for sinusoids in white gaussian noise. Due to the use of a brute force optimization, it can only be used for a limited number of sinusoids (typically up to 5).
+
+    Examples
+    --------
+    Generate a sum of noisy sinusoids for which we want to estimate amplitudes, frequencies and phases
+
+    .. plot::
+        :format: doctest
+        :include-source: True
+
+        >>> from pyestimate.estimators import multiple_sin_param_estimate
+        >>> import numpy as np
+        >>> import matplotlib.pyplot as plt
+        >>> N = 40 # number of samples
+        >>> f = [0.123456, 0.103456] # frequencies to be estimated
+        >>> A = [1.23456, 1.34567] # amplitude to be estimated
+        >>> phi = [0.0, np.pi/4] # phase to be estimated
+        >>> p = len(A) # number of sinusoids
+        >>> sigma = 1.0 # standard deviation of WGN
+        >>> n = np.arange(N)
+        >>> s = 0.0
+        >>> for i in range(p):
+        >>>     s += A[i] * np.cos(2*np.pi*f[i]*n+phi[i]) # original signal
+        >>> w = np.random.default_rng(seed=0).normal(scale=sigma, size=N) # white gaussian noise
+        >>> x = s+w # input signal for estimation: sine + noise
+
+        Estimate sinusoid parameters
+        
+        >>> A_hat, f_hat, phi_hat = multiple_sin_param_estimate(x, p) # parameters estimation
+
+        Reconstruct original signal from estimated parameters
+
+        >>> s_hat = 0.0
+        >>> for i in range(p):
+        >>>     s_hat += A_hat[i] * np.cos(2*np.pi*f_hat[i]*n+phi_hat[i]) # estimated signal
+
+        Plot the original signal, the input signal corrupted with noise and the reconstructed signal
+        
+        >>> plt.plot(n, s, linewidth=3.0, label='original signal')
+        >>> plt.plot(n, x, label='corrupted signal')
+        >>> plt.plot(n, s_hat, 'k--', label='estimated signal')
+        >>> plt.xlabel('$n$')
+        >>> plt.ylabel('$x[n]$')
+        >>> plt.title('Sum of sinusoids: frequencies, amplitudes and phases estimation in WGN')
+        >>> plt.legend()
+        >>> plt.grid()
+        >>> plt.show()
+
+    References
+    ----------
+    .. [1] Kay, S. M. (1997). Fundamentals of Statistical Signal Processing: Estimation Theory. Prentice Hall.
+
+    
+    """
+    if detrend_type in {'linear', 'constant'}:
+        x = detrend(x, type=detrend_type)
+    
+    N = len(x)
+    n = np.arange(N)
+    x = np.array(x).reshape((N,1))
+
+    if freq is None:
+        def J_func(f):
+            if not all(f[i] > f[i+1] for i in range(len(f) - 1)):
+                return np.inf
+            HH = []
+            for ff in f:
+                c = np.cos(2*np.pi*ff*n)
+                s = np.sin(2*np.pi*ff*n)
+                HH.append(c)
+                HH.append(s)
+            H = np.vstack(HH).T
+            return (-x.T @ H @ np.linalg.inv(H.T @ H) @ H.T @ x)[0,0]
+        freq = optimize.brute(J_func, ((1e-12, 0.5-1e-12),)*p, Ns=brute_Ns, finish=optimize.fmin)
+
+    p = len(freq)
+    HH = []
+    for ff in freq:
+        c = np.cos(2*np.pi*ff*n)
+        s = np.sin(2*np.pi*ff*n)
+        HH.append(c)
+        HH.append(s)
+    H = np.vstack(HH).T
+
+    alpha_hat = np.linalg.inv(H.T @ H) @ H.T @ x
+    amp = []
+    phase = []
+    for i in range(p):
+        amp.append(np.linalg.norm(alpha_hat[2*i:2*i+2]))
+        phase.append(np.arctan2(-alpha_hat[2*i+1], alpha_hat[2*i])[0])
+
+    return amp, freq, phase
