@@ -5,7 +5,7 @@ import numpy as np
 from scipy.signal import detrend, periodogram
 from scipy import optimize
 
-def sin_param_estimate(x, freq=None, use_fft=True, nfft=4096, brute_Ns=1000, detrend_type='constant'):
+def sin_param_estimate(x, freq=None, use_fft=False, nfft=4096, brute_Ns=1000, detrend_type='constant'):
     """
     Estimate the parameters of a sinusoid (amplitude, frequency and phase). The sinusoid model is :math:`s[n] = A \cos(2 \pi f n + \phi)`.
 
@@ -18,7 +18,7 @@ def sin_param_estimate(x, freq=None, use_fft=True, nfft=4096, brute_Ns=1000, det
     freq : float, optional
         Digital frequency of the input sinusoid (`freq = F/Fs` if `F` is the analog frequency and `Fs` is the sampling frequency). If `freq` is None or is not given, the frequency is estimated.
     use_fft: bool, optional
-        If `True`, use a periodogram to estimate frequency. This should be used if the digital frequency is known to be in `[2/N, 1/2-2/N]`, with `N = len(x)` otherwise, set to `False`. Default to `True`.
+        If `True`, use a periodogram to estimate frequency. This should be used if the digital frequency is known to be in `[2/N, 1/2-2/N]`, with `N = len(x)` otherwise, set to `False`.
     nfft: int, optional
         Length of the FFT used if use_fft is `True`. 
     brute_Ns: int, optional

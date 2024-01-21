@@ -9,3 +9,4 @@ __pycache__/
 settings.json
 *.so
 *~
+generate_logo.ipynb
