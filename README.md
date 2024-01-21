@@ -13,7 +13,7 @@ Install pyestimate and its dependencies from PyPI using pip:
 Documentation
 =============
 
-Documentation is provided by [ReadtheDocs](http://pyestimate.readthedocs.org/).
+Documentation is hosted on [ReadtheDocs](http://pyestimate.readthedocs.org/).
 
 Examples
 ========
