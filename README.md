@@ -19,7 +19,7 @@ Examples
 ========
 
 * [Frequency, amplitude and phase estimation of sinusoidal signal with noise](examples/sin_param_estimate_ex.ipynb)
+* [Removal of 50Hz or 60Hz interferer without filtering](examples/60Hz_interference.ipynb)
 * [Frequency, amplitude and phase estimation of 2D sinusoidal signal with noise](examples/sin2d_param_estimate_ex.ipynb)
 * [Estimation of frequency, amplitude and phase for multiple sinusoids (<5)](examples/multiple_sin_param_estimate_ex.ipynb)
 * [Principal components AR estimator for multiple sinusoids (faster/suboptimal algorithm)](examples/pc_ar_estimator_ex.ipynb)
-
