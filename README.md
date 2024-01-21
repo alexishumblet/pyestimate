@@ -1,3 +1,8 @@
+.. image:: https://raw.githubusercontent.com/alexishumblet/pyestimate/main/docs/images/pyestimate_logo.png
+   :align: left
+   :alt: pyestimate
+
+
 <b>pyestimate</b> is a python library implementing various statistical signal processing algorithms.
 
 It is for now limited to 1D and 2D sinusoidal signal parameters estimation (amplitude, frequency and phase).
