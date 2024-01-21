@@ -6,7 +6,7 @@
 Installation
 ============
 
-Install pyestimate and its dependencies from PyPI_ using pip::
+Install pyestimate and its dependencies from PyPI using pip:
 
     pip install pyestimate
 
