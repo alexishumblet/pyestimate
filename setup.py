@@ -2,8 +2,8 @@ from setuptools import setup
 
 setup(
     name='pyestimate',
-    version='0.2.0',    
-    description='Various algorithms in statistical signal processing',
+    version='0.3.0',    
+    description='Sinusoidal parameters estimators (1D, 2D, single or multiple sinusoids, ...)',
     url='https://github.com/alexishumblet/pyestimate',
     author='Alexis Humblet',
     author_email='alexishumblet@gmail.com',

@@ -342,3 +342,106 @@ def multiple_sin_param_estimate(x, p, freq=None, brute_Ns=100, detrend_type='con
         phase.append(np.arctan2(-alpha_hat[2*i+1], alpha_hat[2*i])[0])
 
     return amp, freq, phase
+
+def pc_ar_estimator(x, p, detrend_type='constant'):
+    """
+    Principal component AR estimator: estimate the parameters of multiple sinusoids (amplitudes, frequencies and phases). The signal model is :math:`s[n] = \sum_{i=1}^{p} A_i \cos(2 \pi f_i n + \phi_i)`. This is faster than the MLE estimator implemented in `multiple_sin_param_estimate`, but less resilient to noise.
+
+    Parameters
+    ----------
+    x : array_like 
+        A 1-D input sequence of real numbers.
+    p : int
+        Number of sinusoids to be estimated.
+    detrend_type: {'linear', 'constant'}, optional
+        Specifies how to detrend the input sequence. It is passed as the type argument to the `scipy.signal.detrend` function. Default to `constant`.
+
+    Returns
+    -------
+    A: list of floats
+        Estimated amplitude of the sinusoids (> 0).
+    f: list of floats
+        Estimated digital frequencies of the sinusoids (or input frequencies if `freq` was given as input parameter), in `]0, 0.5[`.
+    phi: list of floats
+        Estimated phases of the sinusoids, in `[-pi, pi]`.
+
+    Notes
+    -----
+    This optimator is suboptimal, but practical for a larger number of sinusoids than the MLE estimator implemented in `multiple_sin_param_estimate`.
+
+    Examples
+    --------
+    Generate a sum of noisy sinusoids for which we want to estimate amplitudes, frequencies and phases
+
+    .. plot::
+        :format: doctest
+        :include-source: True
+
+        >>> from pyestimate.estimators import pc_ar_estimator
+        >>> import numpy as np
+        >>> import matplotlib.pyplot as plt
+        >>> N = 40 # number of samples
+        >>> f = [0.12345, 0.10345, 0.05234, 0.05, 0.0351] # frequencies to be estimated
+        >>> A = [1.23456, 1.34567, 1.0, 1.0, 1.0] # amplitude to be estimated
+        >>> phi = [0.0, np.pi/4, 0.0, 0.0, 0.0] # phase to be estimated
+        >>> p = len(A) # number of sinusoids
+        >>> sigma = 0.01 # standard deviation of WGN
+        >>> n = np.arange(N)
+        >>> s = 0.0
+        >>> for i in range(p):
+        >>>     s += A[i] * np.cos(2*np.pi*f[i]*n+phi[i]) # original signal
+        >>> w = np.random.default_rng(seed=0).normal(scale=sigma, size=N) # white gaussian noise
+        >>> x = s+w # input signal for estimation: sine + noise
+
+        Estimate sinusoid parameters
+        
+        >>> A_hat, f_hat, phi_hat = pc_ar_estimator(x, p) # parameters estimation
+
+        Reconstruct original signal from estimated parameters
+
+        >>> s_hat = 0.0
+        >>> for i in range(p):
+        >>>     s_hat += A_hat[i] * np.cos(2*np.pi*f_hat[i]*n+phi_hat[i]) # estimated signal
+
+        Plot the original signal, the input signal corrupted with noise and the reconstructed signal
+        
+        >>> plt.plot(n, s, linewidth=3.0, label='original signal')
+        >>> plt.plot(n, x, label='corrupted signal')
+        >>> plt.plot(n, s_hat, 'k--', label='estimated signal')
+        >>> plt.xlabel('$n$')
+        >>> plt.ylabel('$x[n]$')
+        >>> plt.title('Sum of sinusoids: frequencies, amplitudes and phases estimation in WGN')
+        >>> plt.legend()
+        >>> plt.grid()
+        >>> plt.show()
+
+    References
+    ----------
+    .. [1] Kay, S. M. (2013). Fundamentals of statistical signal processing. Volume III, Practical algorithm development. Prentice Hall.
+
+    
+    """
+    if detrend_type in {'linear', 'constant'}:
+        x = detrend(x, type=detrend_type)
+    else:
+        x = np.array(x)
+
+    N = len(x)
+    L = int(np.floor(3/4*N))
+    Hf = np.vstack([x[i:i+N-L] for i in range(L-1, -1, -1)]).T
+    Hb = np.vstack([x[i:i+N-L] for i in range(1, L+1, 1)]).T
+    hf = x[L:]
+    hb = x[:N-L]
+    H = np.vstack([Hf, Hb])
+    h = np.hstack([hf, hb])
+    eigenvalues = np.flip(np.sort(np.linalg.eigvals(H.T @ H)))
+    Hs = np.linalg.pinv(H, 0.5*(np.sqrt(eigenvalues[2*p-1])+np.sqrt(eigenvalues[2*p]))/eigenvalues[0])
+    a_hat = -Hs @ h
+    roots = np.polynomial.polynomial.polyroots(np.flip(np.hstack([[1], a_hat])))
+    roots = roots[np.imag(roots)>=0]
+    roots = roots[np.abs(np.angle(roots))/2/np.pi>1e-12]
+    roots = roots[np.abs(np.angle(roots))/2/np.pi<0.5-1e-12]
+    roots = roots[np.argsort(np.abs(np.abs(roots)-1))[:p]]
+    freq = np.flip(np.sort(np.abs(np.angle(roots)/2/np.pi)))
+    
+    return multiple_sin_param_estimate(x, p, freq, detrend_type=None)
