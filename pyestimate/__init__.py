@@ -1,6 +1,8 @@
 """
 
 .. autosummary::
+    :toctree: generated/
+    
     pyestimate.sin_param_estimate
     pyestimate.sin2d_param_estimate
     pyestimate.multiple_sin_param_estimate
