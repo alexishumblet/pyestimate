@@ -36,6 +36,12 @@ Examples
 Functions
 ---------
 
+.. autosummary::
+    pyestimate.sin_param_estimate
+    pyestimate.sin2d_param_estimate
+    pyestimate.multiple_sin_param_estimate
+    pyestimate.pc_ar_estimator
+    
 .. automodule:: pyestimate
    :members:
 
