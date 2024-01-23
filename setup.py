@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='pyestimate',
-    version='0.3.0',    
+    version='0.3.1',    
     description='Sinusoidal parameters estimators (1D, 2D, single or multiple sinusoids, ...)',
     url='https://github.com/alexishumblet/pyestimate',
     author='Alexis Humblet',
